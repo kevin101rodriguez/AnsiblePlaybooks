@@ -1,0 +1,26 @@
+- name: Add Docker repositories and proceed to docker installation
+  hosts: Ketfrix
+  remote_user: ansible
+  gather_facts: yes
+  tasks:
+#  - name: collect
+  - name: Add Docker official GPG key
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+      state: present
+    when: ansible_facts['distribution'] == "Ubuntu"
+  - name: Add Docker repositories
+    apt_repository:
+      repo: deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \ $(. /etc/os-release && echo "$VERSION_CODENAME") stable
+      state: present
+    when: ansible_facts['distribution'] == "Ubuntu"
+  - name:
+    apt:
+      pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    when: ansible_facts['distribution'] == "Ubuntu"
+
