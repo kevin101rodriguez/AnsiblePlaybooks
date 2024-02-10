@@ -5,16 +5,21 @@
   tasks:
 #  - name: collect
   - name: Add Docker official GPG key
+    become: yes
     apt_key:
       url: https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
       state: present
     when: ansible_facts['distribution'] == "Ubuntu"
+
   - name: Add Docker repositories
+    become: yes
     apt_repository:
       repo: deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \ $(. /etc/os-release && echo "$VERSION_CODENAME") stable
       state: present
     when: ansible_facts['distribution'] == "Ubuntu"
+
   - name:
+    become: yes
     apt:
       pkg:
       - docker-ce
@@ -24,3 +29,21 @@
       - docker-compose-plugin
     when: ansible_facts['distribution'] == "Ubuntu"
 
+  - name: create systemctl docker service directory to override conf
+    become: yes
+    ansible.builtin.file: 
+      path: /etc/systemctl/systemd/docker.service.d/
+      state: directory
+      mode: '0750'
+
+  - name: Copy from Local to Remote Target Machine with 'copy'
+    copy:
+      src: override.conf
+      dest: /etc/systemctl/systemd/docker.service.d/
+      backup: no 
+     
+  - name: Restart service cron on centos, in all cases, also issue daemon-reload to pick up config changes
+    ansible.builtin.systemd_service:
+      state: restarted
+      daemon_reload: true
+      name: docker  
