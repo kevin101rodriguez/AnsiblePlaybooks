@@ -26,11 +26,14 @@
   cp cert.pem /config/kasm/current/certs/docker/
   cp cert.pem /config/utilities/watchtower/certs/docker
   cp cert.pem /config/ingress/traefik/certs/docker
+  cp cert.pem /config/monitoring/uptime_kuma/docker-tls/192.168.1.34/  
   cp key.pem /config/kasm/current/certs/docker/
   cp key.pem /config/utilities/watchtower/certs/docker
   cp key.pem /config/ingress/traefik/certs/docker
+  cp key.pem /config/monitoring/uptime_kuma/docker-tls/192.168.1.34/ 
   cp ca.pem /config/kasm/current/certs/docker/
   cp ca.pem /config/utilities/watchtower/certs/docker
   cp ca.pem /config/ingress/traefik/certs/docker
+  cp ca.pem /config/monitoring/uptime_kuma/docker-tls/192.168.1.34/ 
   cd -
   rm -Rf /tmp/certs
